@@ -1,6 +1,5 @@
 package com.oracle.coherence.rx;
 
-
 import com.tangosol.net.AsyncNamedCache;
 import com.tangosol.net.NamedCache;
 
@@ -11,7 +10,6 @@ import java.util.Collection;
 import java.util.Map;
 
 import rx.Observable;
-
 
 /**
  * Reactive Extensions (RxJava) {@link NamedCache} API implementation.
@@ -110,7 +108,8 @@ public class RxNamedCacheImpl<K, V>
         }
 
     @Override
-    public <R> Observable<R> aggregate(Collection<? extends K> collKeys, InvocableMap.EntryAggregator<? super K, ? super V, R> aggregator)
+    public <R> Observable<R>
+    aggregate(Collection<? extends K> collKeys, InvocableMap.EntryAggregator<? super K, ? super V, R> aggregator)
         {
         return Observable.create((s) ->
             m_cache.aggregate(collKeys, aggregator)
@@ -134,7 +133,8 @@ public class RxNamedCacheImpl<K, V>
         }
 
     @Override
-    public <R> Observable<R> aggregate(Filter filter, InvocableMap.EntryAggregator<? super K, ? super V, R> aggregator)
+    public <R> Observable<R>
+    aggregate(Filter filter, InvocableMap.EntryAggregator<? super K, ? super V, R> aggregator)
         {
         return Observable.create((s) ->
             m_cache.aggregate(filter, aggregator)

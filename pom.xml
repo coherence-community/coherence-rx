@@ -30,7 +30,7 @@
 
     <developers>
         <developer>
-            <name>Aleksandar Seovic </name>
+            <name>Aleksandar Seovic</name>
             <organization>Oracle Corporation</organization>
             <email>aleksandar.seovic@oracle.com></email>
         </developer>
@@ -45,8 +45,6 @@
 
     <modules>
         <module>coherence-rx</module>
-
-
         <module>coherence-rx-site</module>
     </modules>
 

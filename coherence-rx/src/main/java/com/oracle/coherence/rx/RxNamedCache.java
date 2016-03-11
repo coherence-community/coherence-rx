@@ -1,6 +1,5 @@
 package com.oracle.coherence.rx;
 
-
 import com.tangosol.internal.util.processor.CacheProcessors;
 
 import com.tangosol.net.AsyncNamedCache;
@@ -9,8 +8,11 @@ import com.tangosol.net.NamedCache;
 import com.tangosol.net.cache.CacheMap;
 
 import com.tangosol.util.Filter;
+import com.tangosol.util.Filters;
 import com.tangosol.util.InvocableMap;
 
+import com.tangosol.util.aggregator.Count;
+import com.tangosol.util.extractor.IdentityExtractor;
 import com.tangosol.util.filter.AlwaysFilter;
 
 import com.tangosol.util.function.Remote;
@@ -20,14 +22,13 @@ import java.util.Map;
 
 import rx.Observable;
 
-
 /**
  * Reactive Extensions (RxJava) {@link NamedCache} API.
  *
  * @param <K>  the type of the entry keys
  * @param <V>  the type of the entry values
  *           
- * @author as  2015.02.15
+ * @author Aleksandar Seovic  2015.02.15
  */
 @SuppressWarnings("unused")
 public interface RxNamedCache<K, V>
@@ -62,7 +63,7 @@ public interface RxNamedCache<K, V>
         return new RxNamedCacheImpl<>(cache);
         }
 
-    // ---- Asynchronous CacheMap methods -----------------------------------
+    // ---- CacheMap methods ------------------------------------------------
 
     /**
      * Returns the value to which the specified key is mapped, or {@code null}
@@ -93,22 +94,8 @@ public interface RxNamedCache<K, V>
      */
     default Observable<? extends Map.Entry<? extends K, ? extends V>> getAll(Collection<? extends K> colKeys)
         {
-        return invokeAll(colKeys, CacheProcessors.get());
-        }
-
-    /**
-     * Get all the entries that satisfy the specified filter. For each entry
-     * that satisfies the filter, the key and its corresponding value will be
-     * placed in the map that is returned by this method.
-     *
-     * @param filter  a Filter that determines the set of entries to return
-     *
-     * @return an {@link Observable} for a Map of keys to values for the
-     *         specified filter
-     */
-    default Observable<? extends Map.Entry<? extends K, ? extends V>> getAll(Filter filter)
-        {
-        return invokeAll(filter, CacheProcessors.get());
+        return invokeAll(colKeys, CacheProcessors.get())
+                .filter(e -> e.getValue() != null);
         }
 
     /**
@@ -166,7 +153,8 @@ public interface RxNamedCache<K, V>
     @SuppressWarnings("unchecked")
     default Observable<Void> putAll(Map<? extends K, ? extends V> map)
         {
-        return (Observable) invokeAll(map.keySet(), CacheProcessors.putAll(map));
+        return (Observable) invokeAll(map.keySet(), CacheProcessors.putAll(map))
+                .filter(entry -> false);
         }
 
     /**
@@ -193,7 +181,8 @@ public interface RxNamedCache<K, V>
     @SuppressWarnings("unchecked")
     default Observable<Void> removeAll(Collection<? extends K> colKeys)
         {
-        return (Observable) invokeAll(colKeys, CacheProcessors.removeBlind());
+        return (Observable) invokeAll(colKeys, CacheProcessors.removeBlind())
+                .filter(entry -> false);
         }
 
     /**
@@ -206,10 +195,11 @@ public interface RxNamedCache<K, V>
     @SuppressWarnings("unchecked")
     default Observable<Void> removeAll(Filter filter)
         {
-        return (Observable) invokeAll(filter, CacheProcessors.removeBlind());
+        return (Observable) invokeAll(filter, CacheProcessors.removeBlind())
+                .filter(entry -> false);
         }
 
-    // ---- Asynchronous QueryMap methods -----------------------------------
+    // ---- QueryMap methods ------------------------------------------------
 
     /**
      * Return an {@link Observable} of all the keys contained in this map.
@@ -286,7 +276,7 @@ public interface RxNamedCache<K, V>
         return invokeAll(filter, CacheProcessors.get()).map(Map.Entry::getValue);
         }
 
-    // ---- Asynchronous InvocableMap methods -------------------------------
+    // ---- InvocableMap methods --------------------------------------------
 
     /**
      * Invoke the passed EntryProcessor against the Entry specified by the
@@ -400,7 +390,72 @@ public interface RxNamedCache<K, V>
     <R> Observable<R> aggregate(
             Filter filter, InvocableMap.EntryAggregator<? super K, ? super V, R> aggregator);
 
-    // ---- Asynchronous Map methods ----------------------------------------
+    // ---- Map methods -----------------------------------------------------
+
+    /**
+     * Returns the number of key-value mappings in this cache.  If the
+     * cache contains more than <tt>Integer.MAX_VALUE</tt> elements, returns
+     * <tt>Integer.MAX_VALUE</tt>.
+     *
+     * @return the number of key-value mappings in this cache
+     */
+    default Observable<Integer> size()
+        {
+        return aggregate(new Count<>());
+        }
+
+    /**
+     * Returns <tt>true</tt> if this cache contains no key-value mappings.
+     *
+     * @return <tt>true</tt> if this cache contains no key-value mappings
+     */
+    default Observable<Boolean> isEmpty()
+        {
+        return size().map(size -> size == 0);
+        }
+
+    /**
+     * Removes all of the mappings from this cache.
+     * The cache will be empty after this operation completes.
+     */
+    default Observable<Void> clear()
+        {
+        return removeAll(AlwaysFilter.INSTANCE);
+        }
+
+    /**
+     * Returns <tt>true</tt> if this cache contains a mapping for the specified
+     * key.  More formally, returns <tt>true</tt> if and only if
+     * this cache contains a mapping for a key <tt>k</tt> such that
+     * <tt>(key==null ? k==null : key.equals(k))</tt>.  (There can be
+     * at most one such mapping.)
+     *
+     * @param key key whose presence in this cache is to be tested
+     *
+     * @return <tt>true</tt> if this cache contains a mapping for the specified
+     *         key
+     */
+    default Observable<Boolean> containsKey(K key)
+        {
+        return invoke(key, entry -> entry.isPresent() || entry.getValue() != null);
+        }
+
+    /**
+     * Returns <tt>true</tt> if this cache maps one or more keys to the
+     * specified value.  More formally, returns <tt>true</tt> if and only if
+     * this cache contains at least one mapping to a value <tt>v</tt> such that
+     * <tt>(value==null ? v==null : value.equals(v))</tt>.
+     *
+     * @param value value whose presence in this cache is to be tested
+     *
+     * @return <tt>true</tt> if this cache maps one or more keys to the
+     *         specified value
+     */
+    default Observable<Boolean> containsValue(Object value)
+        {
+        return aggregate(Filters.equal(IdentityExtractor.INSTANCE, value), new Count<>())
+                .map(count -> count > 0);
+        }
 
     /**
      * Returns the value to which the specified key is mapped, or {@code
@@ -621,7 +676,8 @@ public interface RxNamedCache<K, V>
     default Observable<Void> replaceAll(
             Collection<? extends K> collKeys, Remote.BiFunction<? super K, ? super V, ? extends V> function)
         {
-        return (Observable) invokeAll(collKeys, CacheProcessors.replace(function));
+        return (Observable) invokeAll(collKeys, CacheProcessors.replace(function))
+                .filter(e -> false);
         }
 
     /**
@@ -636,6 +692,7 @@ public interface RxNamedCache<K, V>
     default Observable<Void> replaceAll(
             Filter filter, Remote.BiFunction<? super K, ? super V, ? extends V> function)
         {
-        return (Observable) invokeAll(filter, CacheProcessors.replace(function));
+        return (Observable) invokeAll(filter, CacheProcessors.replace(function))
+                .filter(e -> false);
         }
     }

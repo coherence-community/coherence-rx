@@ -19,10 +19,10 @@ import rx.subscriptions.Subscriptions;
 /**
  * Observable implementation of a Coherence MapListener.
  * <p>
- * This is a hot Observable which will start receiving events as soon as it's
+ * This is a 'hot' Observable which will start receiving events as soon as it's
  * registered with a cache via {@link NamedCache#addMapListener} method.
  *
- * @author as  2015.02.22
+ * @author Aleksandar Seovic  2015.02.22
  */
 public class ObservableMapListener<K, V>
         extends MultiplexingMapListener<K, V>
@@ -33,7 +33,7 @@ public class ObservableMapListener<K, V>
     @Override
     public void onMapEvent(MapEvent<K, V> evt)
         {
-        m_subscribers.forEach((s) -> s.onNext(evt));
+        m_subscribers.forEach(s -> s.onNext(evt));
         }
 
     // ---- helper methods --------------------------------------------------
