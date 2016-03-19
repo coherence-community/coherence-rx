@@ -8,11 +8,10 @@ import com.tangosol.net.NamedCache;
 import com.tangosol.net.cache.CacheMap;
 
 import com.tangosol.util.Filter;
-import com.tangosol.util.Filters;
 import com.tangosol.util.InvocableMap;
 
 import com.tangosol.util.aggregator.Count;
-import com.tangosol.util.extractor.IdentityExtractor;
+
 import com.tangosol.util.filter.AlwaysFilter;
 
 import com.tangosol.util.function.Remote;
@@ -437,24 +436,7 @@ public interface RxNamedCache<K, V>
      */
     default Observable<Boolean> containsKey(K key)
         {
-        return invoke(key, entry -> entry.isPresent() || entry.getValue() != null);
-        }
-
-    /**
-     * Returns <tt>true</tt> if this cache maps one or more keys to the
-     * specified value.  More formally, returns <tt>true</tt> if and only if
-     * this cache contains at least one mapping to a value <tt>v</tt> such that
-     * <tt>(value==null ? v==null : value.equals(v))</tt>.
-     *
-     * @param value value whose presence in this cache is to be tested
-     *
-     * @return <tt>true</tt> if this cache maps one or more keys to the
-     *         specified value
-     */
-    default Observable<Boolean> containsValue(Object value)
-        {
-        return aggregate(Filters.equal(IdentityExtractor.INSTANCE, value), new Count<>())
-                .map(count -> count > 0);
+        return invoke(key, InvocableMap.Entry::isPresent);
         }
 
     /**
