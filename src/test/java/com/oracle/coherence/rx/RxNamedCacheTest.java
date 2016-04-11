@@ -5,6 +5,7 @@ import com.oracle.tools.junit.CoherenceClusterOrchestration;
 import com.oracle.tools.junit.SessionBuilder;
 import com.oracle.tools.junit.SessionBuilders;
 import com.oracle.tools.runtime.LocalPlatform;
+import com.oracle.tools.runtime.java.options.SystemProperty;
 import com.tangosol.net.ConfigurableCacheFactory;
 import com.tangosol.net.NamedCache;
 
@@ -37,9 +38,9 @@ public class RxNamedCacheTest
     {
     @ClassRule
     public static final CoherenceClusterOrchestration ORCHESTRATION =
-            new CoherenceClusterOrchestration()
-                    .setSystemProperty("coherence.nameservice.address",
-                                       LocalPlatform.getInstance().getLoopbackAddress().getHostAddress());
+            new CoherenceClusterOrchestration().withOptions(
+                    SystemProperty.of("coherence.nameservice.address", LocalPlatform.get().getLoopbackAddress().getHostAddress())
+            );
 
     public static final SessionBuilder MEMBER = SessionBuilders.storageDisabledMember();
 
@@ -290,7 +291,6 @@ public class RxNamedCacheTest
         assertEquals(0, (int) rx(cache).size().toBlocking().single());
         assertTrue(rx(cache).isEmpty().toBlocking().single());
         assertFalse(rx(cache).containsKey(1).toBlocking().single());
-        assertFalse(rx(cache).containsValue("two").toBlocking().single());
 
         cache.put(1, "one");
         cache.put(2, "two");
@@ -298,13 +298,11 @@ public class RxNamedCacheTest
         assertEquals(2, (int) rx(cache).size().toBlocking().single());
         assertFalse(rx(cache).isEmpty().toBlocking().single());
         assertTrue(rx(cache).containsKey(1).toBlocking().single());
-        assertTrue(rx(cache).containsValue("two").toBlocking().single());
 
         rx(cache).clear().toBlocking().singleOrDefault(null);
         assertEquals(0, (int) rx(cache).size().toBlocking().single());
         assertTrue(rx(cache).isEmpty().toBlocking().single());
         assertFalse(rx(cache).containsKey(1).toBlocking().single());
-        assertFalse(rx(cache).containsValue("two").toBlocking().single());
         }
 
     @Test

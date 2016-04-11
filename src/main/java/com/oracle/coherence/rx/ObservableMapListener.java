@@ -2,17 +2,21 @@ package com.oracle.coherence.rx;
 
 
 import com.tangosol.net.NamedCache;
+import com.tangosol.net.cache.WrapperNamedCache;
 import com.tangosol.util.MapEvent;
 import com.tangosol.util.MapListener;
 import com.tangosol.util.MultiplexingMapListener;
 
+import java.util.HashMap;
 import java.util.Set;
 
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscriber;
 
+import rx.observables.ConnectableObservable;
 import rx.subscriptions.Subscriptions;
 
 
@@ -100,28 +104,28 @@ public class ObservableMapListener<K, V>
 
     public static void main(String[] args) throws InterruptedException
         {
-        //WrapperNamedCache<Integer, String> cache = new WrapperNamedCache<>(new HashMap<>(), "test");
-        //
-        //ObservableMapListener<Integer, String> listener = new ObservableMapListener<>();
-        //cache.addMapListener(listener);
-        //
-        //ConnectableObservable<MapEvent<? extends Integer, ? extends String>> hot = listener.toObservable().publish();
-        //hot.connect();
-        //Thread.sleep(600);
-        //
-        //ConnectableObservable<MapEvent<? extends Integer, ? extends String>> observable = hot.replay();
-        //observable.connect();
-        //observable.subscribe(System.out::println);
-        //
-        //cache.put(1, "one");
-        //cache.put(2, "two");
-        //cache.put(3, "three");
-        //cache.put(2, "TWO");
-        //cache.remove(3);
-        //
-        //Thread.sleep(600);
-        //
-        //observable.groupBy(MapEvent::getKey).subscribe(o -> o.buffer(1, TimeUnit.SECONDS).subscribe(System.out::println));
-        //Thread.sleep(2000);
+        WrapperNamedCache<Integer, String> cache = new WrapperNamedCache<>(new HashMap<>(), "test");
+
+        ObservableMapListener<Integer, String> listener = new ObservableMapListener<>();
+        cache.addMapListener(listener);
+
+        ConnectableObservable<MapEvent<? extends Integer, ? extends String>> hot = listener.toObservable().publish();
+        hot.connect();
+        Thread.sleep(600);
+
+        ConnectableObservable<MapEvent<? extends Integer, ? extends String>> observable = hot.replay();
+        observable.connect();
+        observable.subscribe(System.out::println);
+
+        cache.put(1, "one");
+        cache.put(2, "two");
+        cache.put(3, "three");
+        cache.put(2, "TWO");
+        cache.remove(3);
+
+        Thread.sleep(600);
+
+        observable.groupBy(MapEvent::getKey).subscribe(o -> o.buffer(1, TimeUnit.SECONDS).subscribe(System.out::println));
+        Thread.sleep(2000);
         }
     }
