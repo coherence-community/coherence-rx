@@ -1,5 +1,22 @@
-package com.oracle.coherence.rx;
+/*
+ * File: RxNamedCacheTest.java
+ *
+ * Copyright (c) 2015, 2016 Oracle and/or its affiliates.
+ *
+ * You may not use this file except in compliance with the Universal Permissive
+ * License (UPL), Version 1.0 (the "License.")
+ *
+ * You may obtain a copy of the License at https://opensource.org/licenses/UPL.
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and limitations
+ * under the License.
+ */
 
+package com.oracle.coherence.rx;
 
 import com.oracle.tools.junit.CoherenceClusterOrchestration;
 import com.oracle.tools.junit.SessionBuilder;
@@ -8,25 +25,24 @@ import com.oracle.tools.runtime.LocalPlatform;
 import com.oracle.tools.runtime.java.options.SystemProperty;
 import com.tangosol.net.ConfigurableCacheFactory;
 import com.tangosol.net.NamedCache;
-
 import com.tangosol.util.InvocableMap;
 import com.tangosol.util.ValueExtractor;
 import com.tangosol.util.aggregator.LongSum;
 import com.tangosol.util.extractor.IdentityExtractor;
 import com.tangosol.util.filter.AlwaysFilter;
 import com.tangosol.util.filter.GreaterFilter;
-
-import java.util.Arrays;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-import static com.oracle.coherence.rx.RxNamedCache.rx;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
+import static com.oracle.coherence.rx.RxNamedCache.rx;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Unit tests for RxNamedCacheImpl class.
@@ -35,64 +51,81 @@ import static com.oracle.coherence.rx.RxNamedCache.rx;
  */
 @SuppressWarnings("unchecked")
 public class RxNamedCacheTest
-    {
+{
+    /**
+     *Field description
+     */
     @ClassRule
     public static final CoherenceClusterOrchestration ORCHESTRATION =
-            new CoherenceClusterOrchestration().withOptions(
-                    SystemProperty.of("coherence.nameservice.address", LocalPlatform.get().getLoopbackAddress().getHostAddress())
-            );
+        new CoherenceClusterOrchestration().withOptions(SystemProperty.of("coherence.nameservice.address",
+                                                                          LocalPlatform.get().getLoopbackAddress()
+                                                                          .getHostAddress()));
 
-    public static final SessionBuilder MEMBER = SessionBuilders.storageDisabledMember();
+    /**
+     *Field description
+     */
+    public static final SessionBuilder   MEMBER         = SessionBuilders.storageDisabledMember();
+    protected static final GreaterFilter GREATER_THAN_1 = new GreaterFilter<>(IdentityExtractor.INSTANCE, 1);
+    protected static final GreaterFilter GREATER_THAN_2 = new GreaterFilter<>(IdentityExtractor.INSTANCE(), 2);
+
 
     protected <K, V> NamedCache<K, V> getNamedCache()
-        {
+    {
         ConfigurableCacheFactory cacheFactory = ORCHESTRATION.getSessionFor(MEMBER);
 
-        NamedCache cache = cacheFactory.ensureCache("test", null);
+        NamedCache               cache        = cacheFactory.ensureCache("test", null);
+
         cache.clear();
+
         return cache;
-        }
+    }
+
 
     @Test
     public void testGet()
-        {
+    {
         NamedCache<Integer, String> cache = getNamedCache();
+
         cache.put(1, "one");
 
         assertEquals("one", rx(cache).get(1).toBlocking().single());
         assertEquals(null, rx(cache).get(2).toBlocking().single());
-        }
+    }
+
 
     @Test
     public void testGetAll()
-        {
+    {
         NamedCache<Integer, String> cache = getNamedCache();
+
         cache.put(1, "one");
         cache.put(2, "two");
         cache.put(3, "three");
 
         assertEquals(Arrays.asList("one", "two"),
-                     rx(cache).getAll(Arrays.asList(1, 2, 5))
-                             .map(Map.Entry::getValue)
-                             .toSortedList()
-                             .toBlocking()
-                             .single());
-        }
+                     rx(cache).getAll(Arrays.asList(1,
+                                                    2,
+                                                    5)).map(Map.Entry::getValue).toSortedList().toBlocking().single());
+    }
+
 
     @Test
     public void testPut()
-        {
+    {
         NamedCache<Integer, String> cache = getNamedCache();
+
         rx(cache).put(1, "one").toBlocking().singleOrDefault(null);
 
         assertEquals("one", cache.get(1));
-        }
+    }
+
 
     @Test
     public void testPutAll()
-        {
+    {
         NamedCache<Integer, String> cache = getNamedCache();
-        Map<Integer, String> map = new HashMap<>();
+        Map<Integer, String>        map   = new HashMap<>();
+
         map.put(1, "one");
         map.put(2, "two");
         map.put(3, "three");
@@ -102,22 +135,26 @@ public class RxNamedCacheTest
         assertEquals("one", cache.get(1));
         assertEquals("two", cache.get(2));
         assertEquals("three", cache.get(3));
-        }
+    }
+
 
     @Test
     public void testRemove()
-        {
+    {
         NamedCache<Integer, String> cache = getNamedCache();
+
         cache.put(1, "one");
 
         assertEquals("one", rx(cache).remove(1).toBlocking().single());
         assertEquals(null, cache.get(1));
-        }
+    }
+
 
     @Test
     public void testRemoveAll()
-        {
+    {
         NamedCache<Integer, String> cache = getNamedCache();
+
         cache.put(1, "one");
         cache.put(2, "two");
         cache.put(3, "three");
@@ -126,12 +163,14 @@ public class RxNamedCacheTest
 
         assertNull(cache.get(2));
         assertNull(cache.get(3));
-        }
+    }
+
 
     @Test
     public void testRemoveAllWithFilter()
-        {
+    {
         NamedCache<Integer, String> cache = getNamedCache();
+
         cache.put(1, "one");
         cache.put(2, "two");
         cache.put(3, "three");
@@ -141,153 +180,154 @@ public class RxNamedCacheTest
         assertNull(cache.get(1));
         assertNull(cache.get(2));
         assertNull(cache.get(3));
-        }
+    }
+
 
     @Test
     public void testKeySet()
-        {
+    {
         NamedCache<Integer, String> cache = getNamedCache();
+
         cache.put(1, "one");
         cache.put(2, "two");
         cache.put(3, "three");
 
-        assertEquals(Arrays.asList(1, 2, 3),
-                     rx(cache).keySet()
-                             .toSortedList()
-                             .toBlocking()
-                             .single());
-        }
+        assertEquals(Arrays.asList(1, 2, 3), rx(cache).keySet().toSortedList().toBlocking().single());
+    }
+
 
     @Test
     public void testEntrySet()
-        {
+    {
         NamedCache<Integer, String> cache = getNamedCache();
+
         cache.put(1, "one");
         cache.put(2, "two");
         cache.put(3, "three");
 
         assertEquals(Arrays.asList("one", "three", "two"),
-                     rx(cache).entrySet()
-                             .map(Map.Entry::getValue)
-                             .toSortedList()
-                             .toBlocking()
-                             .single());
-        }
+                     rx(cache).entrySet().map(Map.Entry::getValue).toSortedList().toBlocking().single());
+    }
+
 
     @Test
     public void testValues()
-        {
+    {
         NamedCache<Integer, String> cache = getNamedCache();
+
         cache.put(1, "one");
         cache.put(2, "two");
         cache.put(3, "three");
 
-        assertEquals(Arrays.asList("one", "three", "two"),
-                     rx(cache).values()
-                             .toSortedList()
-                             .toBlocking()
-                             .single());
-        }
+        assertEquals(Arrays.asList("one", "three", "two"), rx(cache).values().toSortedList().toBlocking().single());
+    }
+
 
     @Test
     public void testInvoke()
-        {
+    {
         NamedCache<Integer, Integer> cache = getNamedCache();
+
         cache.put(2, 2);
 
         assertEquals(4, (int) rx(cache).invoke(2, square()).toBlocking().single());
-        }
+    }
+
 
     @Test
     public void testInvokeAll()
-        {
+    {
         NamedCache<Integer, Integer> cache = getNamedCache();
+
         cache.put(1, 1);
         cache.put(2, 2);
         cache.put(3, 3);
 
         assertEquals(Arrays.asList(1, 4, 9),
-                     rx(cache).invokeAll(square())
-                             .map(Map.Entry::getValue)
-                             .toSortedList()
-                             .toBlocking()
-                             .single());
-        }
+                     rx(cache).invokeAll(square()).map(Map.Entry::getValue).toSortedList().toBlocking().single());
+    }
+
 
     @Test
     public void testInvokeAllWithKeySet()
-        {
+    {
         NamedCache<Integer, Integer> cache = getNamedCache();
+
         cache.put(1, 1);
         cache.put(2, 2);
         cache.put(3, 3);
 
         assertEquals(Arrays.asList(1, 4),
-                     rx(cache).invokeAll(Arrays.asList(1, 2), square())
-                             .map(Map.Entry::getValue)
-                             .toSortedList()
-                             .toBlocking()
-                             .single());
-        }
+                     rx(cache).invokeAll(Arrays.asList(1, 2),
+                                         square()).map(Map.Entry::getValue).toSortedList().toBlocking().single());
+    }
+
 
     @Test
     public void testInvokeAllWithFilter()
-        {
+    {
         NamedCache<Integer, Integer> cache = getNamedCache();
+
         cache.put(1, 1);
         cache.put(2, 2);
         cache.put(3, 3);
 
         assertEquals(Arrays.asList(4, 9),
-                     rx(cache).invokeAll(GREATER_THAN_1, square())
-                             .map(Map.Entry::getValue)
-                             .toSortedList()
-                             .toBlocking()
-                             .single());
-        }
+                     rx(cache).invokeAll(GREATER_THAN_1,
+                                         square()).map(Map.Entry::getValue).toSortedList().toBlocking().single());
+    }
+
 
     @Test
     public void testAggregate()
-        {
+    {
         NamedCache<Integer, Integer> cache = getNamedCache();
+
         cache.put(1, 1);
         cache.put(2, 2);
         cache.put(3, 3);
 
         assertEquals(6L, (long) rx(cache).aggregate(new LongSum<>(ValueExtractor.identity())).toBlocking().single());
-        }
+    }
+
 
     @Test
     public void testAggregateWithKeySet()
-        {
+    {
         NamedCache<Integer, Integer> cache = getNamedCache();
+
         cache.put(1, 1);
         cache.put(2, 2);
         cache.put(3, 3);
 
-        assertEquals(3L, (long) rx(cache).aggregate(Arrays.asList(1, 2),
-                                                    new LongSum<>(ValueExtractor.identity())).toBlocking().single());
-        }
+        assertEquals(3L,
+                     (long) rx(cache).aggregate(Arrays.asList(1, 2),
+                                                new LongSum<>(ValueExtractor.identity())).toBlocking().single());
+    }
+
 
     @Test
     public void testAggregateWithFilter()
-        {
+    {
         NamedCache<Integer, Integer> cache = getNamedCache();
+
         cache.put(1, 1);
         cache.put(2, 2);
         cache.put(3, 3);
 
-        assertEquals(5L, (long) rx(cache).aggregate(GREATER_THAN_1,
-                                                    new LongSum<>(ValueExtractor.identity())).toBlocking().single());
-        }
+        assertEquals(5L,
+                     (long) rx(cache).aggregate(GREATER_THAN_1,
+                                                new LongSum<>(ValueExtractor.identity())).toBlocking().single());
+    }
+
 
     // ---- Map methods -----------------------------------------------------
 
     @Test
-    public void testSizeContainsClearIsEmpty()
-            throws Exception
-        {
+    public void testSizeContainsClearIsEmpty() throws Exception
+    {
         NamedCache<Integer, String> cache = getNamedCache();
+
         assertEquals(0, (int) rx(cache).size().toBlocking().single());
         assertTrue(rx(cache).isEmpty().toBlocking().single());
         assertFalse(rx(cache).containsKey(1).toBlocking().single());
@@ -303,37 +343,40 @@ public class RxNamedCacheTest
         assertEquals(0, (int) rx(cache).size().toBlocking().single());
         assertTrue(rx(cache).isEmpty().toBlocking().single());
         assertFalse(rx(cache).containsKey(1).toBlocking().single());
-        }
+    }
+
 
     @Test
-    public void testGetOrDefault()
-            throws Exception
-        {
+    public void testGetOrDefault() throws Exception
+    {
         NamedCache<Integer, String> cache = getNamedCache();
+
         cache.put(2, "two");
 
         assertEquals("one", rx(cache).getOrDefault(1, "one").toBlocking().single());
         assertEquals("two", rx(cache).getOrDefault(2, "TWO").toBlocking().single());
-        }
+    }
+
 
     @Test
-    public void testPutIfAbsent()
-            throws Exception
-        {
+    public void testPutIfAbsent() throws Exception
+    {
         NamedCache<String, Integer> cache = getNamedCache();
+
         assertNull(rx(cache).putIfAbsent("1", 1).toBlocking().single());
         assertEquals(1, (int) rx(cache).putIfAbsent("1", 100).toBlocking().single());
         cache.put("2", null);
         assertNull(rx(cache).putIfAbsent("2", 2).toBlocking().single());
         assertEquals(2, cache.size());
         assertEquals(2, (int) cache.get("2"));
-        }
+    }
+
 
     @Test
-    public void testRemoveMatching()
-            throws Exception
-        {
+    public void testRemoveMatching() throws Exception
+    {
         NamedCache<String, Integer> cache = getNamedCache();
+
         cache.put("1", 1);
         cache.put("2", 2);
 
@@ -343,13 +386,14 @@ public class RxNamedCacheTest
         assertEquals(1, cache.size());
         assertTrue(cache.containsKey("1"));
         assertFalse(cache.containsKey("2"));
-        }
+    }
+
 
     @Test
-    public void testReplace()
-            throws Exception
-        {
+    public void testReplace() throws Exception
+    {
         NamedCache<String, Integer> cache = getNamedCache();
+
         cache.put("1", 1);
         cache.put("2", null);
 
@@ -359,13 +403,14 @@ public class RxNamedCacheTest
 
         assertEquals(2, cache.size());
         assertFalse(cache.containsKey("3"));
-        }
+    }
+
 
     @Test
-    public void testReplaceWithValueCheck()
-            throws Exception
-        {
+    public void testReplaceWithValueCheck() throws Exception
+    {
         NamedCache<String, Integer> cache = getNamedCache();
+
         cache.put("1", 1);
         cache.put("2", null);
         cache.put("3", null);
@@ -379,24 +424,26 @@ public class RxNamedCacheTest
         assertNull(cache.get("2"));
         assertEquals(300, (int) cache.get("3"));
         assertFalse(cache.containsKey("4"));
-        }
+    }
+
 
     @Test
-    public void testComputeIfAbsent()
-            throws Exception
-        {
+    public void testComputeIfAbsent() throws Exception
+    {
         NamedCache<String, Integer> cache = getNamedCache();
+
         cache.put("five", 5);
         assertEquals(1, (int) rx(cache).computeIfAbsent("1", Integer::parseInt).toBlocking().single());
         assertEquals(5, (int) rx(cache).computeIfAbsent("five", Integer::parseInt).toBlocking().single());
         assertNull(rx(cache).computeIfAbsent("null", (k) -> null).toBlocking().single());
-        }
+    }
+
 
     @Test
-    public void testComputeIfPresent()
-            throws Exception
-        {
+    public void testComputeIfPresent() throws Exception
+    {
         NamedCache<String, Integer> cache = getNamedCache();
+
         cache.put("1", 1);
         cache.put("2", 2);
 
@@ -408,26 +455,28 @@ public class RxNamedCacheTest
         assertEquals(4, (int) cache.get("2"));
         assertEquals(1, cache.size());
         assertFalse(cache.containsKey("1"));
-        }
+    }
+
 
     @Test
-    public void testCompute()
-            throws Exception
-        {
+    public void testCompute() throws Exception
+    {
         NamedCache<String, Integer> cache = getNamedCache();
+
         cache.put("1", 1);
         cache.put("2", 2);
 
         assertEquals(2, (int) rx(cache).compute("1", (k, v) -> v + v).toBlocking().single());
         assertNull(rx(cache).compute("2", (k, v) -> null).toBlocking().single());
         assertFalse(cache.containsKey("2"));
-        }
+    }
+
 
     @Test
-    public void testMerge()
-            throws Exception
-        {
+    public void testMerge() throws Exception
+    {
         NamedCache<String, Integer> cache = getNamedCache();
+
         cache.put("1", 1);
         cache.put("2", 2);
 
@@ -438,13 +487,14 @@ public class RxNamedCacheTest
 
         assertFalse(cache.containsKey("1"));
         assertTrue(cache.containsKey("3"));
-        }
+    }
+
 
     @Test
-    public void testReplaceAll()
-            throws Exception
-        {
+    public void testReplaceAll() throws Exception
+    {
         NamedCache<String, Integer> cache = getNamedCache();
+
         cache.put("1", 1);
         cache.put("2", 2);
         cache.put("3", 3);
@@ -453,13 +503,14 @@ public class RxNamedCacheTest
         assertEquals(1, (int) cache.get("1"));
         assertEquals(4, (int) cache.get("2"));
         assertEquals(9, (int) cache.get("3"));
-        }
+    }
+
 
     @Test
-    public void testReplaceAllWithKeySet()
-            throws Exception
-        {
+    public void testReplaceAllWithKeySet() throws Exception
+    {
         NamedCache<String, Integer> cache = getNamedCache();
+
         cache.put("1", 1);
         cache.put("2", 2);
         cache.put("3", 3);
@@ -468,13 +519,14 @@ public class RxNamedCacheTest
         assertEquals(1, (int) cache.get("1"));
         assertEquals(2, (int) cache.get("2"));
         assertEquals(9, (int) cache.get("3"));
-        }
+    }
+
 
     @Test
-    public void testReplaceAllWithFilter()
-            throws Exception
-        {
+    public void testReplaceAllWithFilter() throws Exception
+    {
         NamedCache<String, Integer> cache = getNamedCache();
+
         cache.put("1", 1);
         cache.put("2", 2);
         cache.put("3", 3);
@@ -483,15 +535,13 @@ public class RxNamedCacheTest
         assertEquals(1, (int) cache.get("1"));
         assertEquals(2, (int) cache.get("2"));
         assertEquals(9, (int) cache.get("3"));
-        }
+    }
+
 
     // ---- helpers ---------------------------------------------------------
 
     public static InvocableMap.EntryProcessor<Integer, Integer, Integer> square()
-        {
+    {
         return entry -> entry.getValue() * entry.getValue();
-        }
-
-    protected static final GreaterFilter GREATER_THAN_1 = new GreaterFilter<>(IdentityExtractor.INSTANCE, 1);
-    protected static final GreaterFilter GREATER_THAN_2 = new GreaterFilter<>(IdentityExtractor.INSTANCE(), 2);
     }
+}
