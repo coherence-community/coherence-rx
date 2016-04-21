@@ -3,20 +3,21 @@ package com.oracle.coherence.rx;
 
 import com.tangosol.net.NamedCache;
 import com.tangosol.net.cache.WrapperNamedCache;
+
 import com.tangosol.util.MapEvent;
 import com.tangosol.util.MapListener;
-import com.tangosol.util.MultiplexingMapListener;
 
 import java.util.HashMap;
 import java.util.Set;
 
 import java.util.concurrent.CopyOnWriteArraySet;
-
 import java.util.concurrent.TimeUnit;
+
 import rx.Observable;
 import rx.Subscriber;
 
 import rx.observables.ConnectableObservable;
+
 import rx.subscriptions.Subscriptions;
 
 
@@ -29,70 +30,64 @@ import rx.subscriptions.Subscriptions;
  * @author Aleksandar Seovic  2015.02.22
  */
 public class ObservableMapListener<K, V>
-        extends MultiplexingMapListener<K, V>
+        extends Observable<MapEvent<? extends K, ? extends V>>
         implements MapListener<K, V>
     {
-    // ---- MultiplexingMapListener methods ---------------------------------
+    // ---- constructors ----------------------------------------------------
 
-    @Override
-    public void onMapEvent(MapEvent<K, V> evt)
+    /**
+     * Create ObservableMapListener instance.
+     *
+     * @return an ObservableMapListener
+     */
+    public static <K, V> ObservableMapListener<K, V> create()
+        {
+        Set<Subscriber<? super MapEvent<? extends K, ? extends V>>> subscribers = new CopyOnWriteArraySet<>();
+        return new ObservableMapListener<>(subscriber ->
+                       {
+                       subscriber.add(Subscriptions.create(() -> subscribers.remove(subscriber)));
+
+                       if (!subscriber.isUnsubscribed())
+                           {
+                           subscribers.add(subscriber);
+                           }
+                       }, subscribers);
+        }
+
+    /**
+     * Construct ObservableMapListener instance.
+     *
+     * @param onSubscribe  the function to execute when {@link #subscribe(Subscriber)} is called
+     * @param subscribers  the set of registered subscribers
+     */
+    protected ObservableMapListener(Observable.OnSubscribe<MapEvent<? extends K, ? extends V>> onSubscribe,
+                                    Set<Subscriber<? super MapEvent<? extends K, ? extends V>>> subscribers)
+        {
+        super(onSubscribe);
+
+        m_subscribers = subscribers;
+        }
+
+    // ---- MapListener methods ---------------------------------------------
+
+    public void entryInserted(MapEvent<K, V> evt)
+        {
+        onMapEvent(evt);
+        }
+
+    public void entryUpdated(MapEvent<K, V> evt)
+        {
+        onMapEvent(evt);
+        }
+
+    public void entryDeleted(MapEvent<K, V> evt)
+        {
+        onMapEvent(evt);
+        }
+
+    private void onMapEvent(MapEvent<K, V> evt)
         {
         m_subscribers.forEach(s -> s.onNext(evt));
-        }
-
-    // ---- helper methods --------------------------------------------------
-
-    /**
-     * Return an {@link Observable} for this MapListener.
-     *
-     * @return an Observable based on this MapListener
-     */
-    public Observable<MapEvent<? extends K, ? extends V>> toObservable()
-        {
-        return Observable.create(new ToObservableMapListener<>(this));
-        }
-
-    /**
-     * Register {@link Subscriber} from this MapListener.
-     *
-     * @param subscriber  the subscriber to register
-     */
-    protected void subscribe(Subscriber<? super MapEvent<? extends K, ? extends V>> subscriber)
-        {
-        m_subscribers.add(subscriber);
-        }
-
-    /**
-     * Unregister {@link Subscriber} from this MapListener.
-     *
-     * @param subscriber  the subscriber to unregister
-     */
-    protected void unsubscribe(Subscriber<? super MapEvent<? extends K, ? extends V>> subscriber)
-        {
-        m_subscribers.remove(subscriber);
-        }
-
-    // ---- inner class: ToObservableMapListener ----------------------------
-
-    static class ToObservableMapListener<K, V>
-            implements Observable.OnSubscribe<MapEvent<? extends K, ? extends V>>
-        {
-        ToObservableMapListener(ObservableMapListener<K, V> listener)
-            {
-            m_listener = listener;
-            }
-
-        public void call(Subscriber<? super MapEvent<? extends K, ? extends V>> subscriber)
-            {
-            subscriber.add(Subscriptions.create(() -> m_listener.unsubscribe(subscriber)));
-
-            if (!subscriber.isUnsubscribed())
-                {
-                m_listener.subscribe(subscriber);
-                }
-            }
-
-        private ObservableMapListener<K, V> m_listener;
         }
 
     // ---- data members ----------------------------------------------------
@@ -100,16 +95,16 @@ public class ObservableMapListener<K, V>
     /**
      * A set of active subscribers.
      */
-    protected Set<Subscriber<? super MapEvent<? extends K, ? extends V>>> m_subscribers = new CopyOnWriteArraySet<>();
+    protected Set<Subscriber<? super MapEvent<? extends K, ? extends V>>> m_subscribers;
 
     public static void main(String[] args) throws InterruptedException
         {
         WrapperNamedCache<Integer, String> cache = new WrapperNamedCache<>(new HashMap<>(), "test");
 
-        ObservableMapListener<Integer, String> listener = new ObservableMapListener<>();
+        ObservableMapListener<Integer, String> listener = ObservableMapListener.create();
         cache.addMapListener(listener);
 
-        ConnectableObservable<MapEvent<? extends Integer, ? extends String>> hot = listener.toObservable().publish();
+        ConnectableObservable<MapEvent<? extends Integer, ? extends String>> hot = listener.publish();
         hot.connect();
         Thread.sleep(600);
 

@@ -29,7 +29,7 @@ import static com.oracle.coherence.rx.RxNamedCache.rx;
 
 
 /**
- * Unit tests for RxNamedCache class.
+ * Unit tests for RxNamedCacheImpl class.
  *
  * @author Aleksandar Seovic  2015.02.25
  */
