@@ -20,21 +20,16 @@ package com.oracle.coherence.rx;
 
 
 import com.tangosol.net.NamedCache;
-import com.tangosol.net.cache.WrapperNamedCache;
 
 import com.tangosol.util.MapEvent;
 import com.tangosol.util.MapListener;
 
-import java.util.HashMap;
 import java.util.Set;
 
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscriber;
-
-import rx.observables.ConnectableObservable;
 
 import rx.subscriptions.Subscriptions;
 
@@ -42,8 +37,14 @@ import rx.subscriptions.Subscriptions;
 /**
  * Observable implementation of a Coherence MapListener.
  * <p>
- * This is a 'hot' Observable which will start receiving events as soon as it's
- * registered with a cache via {@link NamedCache#addMapListener} method.
+ * This is a 'hot' Observable which will start emitting events as soon as it's
+ * registered with a cache via the {@link NamedCache#addMapListener} method.
+ *
+ * See <a href="http://reactivex.io/documentation/observable.html">Observable
+ * documentation</a> for the explanation of 'hot' vs 'cold' observables.
+ *
+ * @param <K> the type of the entry keys
+ * @param <V> the type of the entry values
  *
  * @author Aleksandar Seovic  2015.02.22
  */
@@ -61,6 +62,7 @@ public class ObservableMapListener<K, V>
     public static <K, V> ObservableMapListener<K, V> create()
         {
         Set<Subscriber<? super MapEvent<? extends K, ? extends V>>> subscribers = new CopyOnWriteArraySet<>();
+
         return new ObservableMapListener<>(subscriber ->
                        {
                        subscriber.add(Subscriptions.create(() -> subscribers.remove(subscriber)));
@@ -88,22 +90,46 @@ public class ObservableMapListener<K, V>
 
     // ---- MapListener methods ---------------------------------------------
 
+    /**
+    * Invoked when a map entry has been inserted.
+    *
+    * @param evt  the MapEvent carrying the insert information
+    */
     public void entryInserted(MapEvent<K, V> evt)
         {
         onMapEvent(evt);
         }
 
+    /**
+    * Invoked when a map entry has been updated.
+    *
+    * @param evt  the MapEvent carrying the update information
+    */
     public void entryUpdated(MapEvent<K, V> evt)
         {
         onMapEvent(evt);
         }
 
+    /**
+    * Invoked when a map entry has been removed.
+    *
+    * @param evt  the MapEvent carrying the delete information
+    */
     public void entryDeleted(MapEvent<K, V> evt)
         {
         onMapEvent(evt);
         }
 
-    private void onMapEvent(MapEvent<K, V> evt)
+    /**
+     * Invoked when any event is received.
+     * <p/>
+     * This method is called internally by the {@link #entryInserted},
+     * {@link #entryUpdated} and {@link #entryDeleted} methods, and is responsible
+     * for propagating received events to all of the subscribers of this observable.
+     *
+     * @param evt  the MapEvent information
+     */
+    protected void onMapEvent(MapEvent<K, V> evt)
         {
         m_subscribers.forEach(s -> s.onNext(evt));
         }
@@ -114,31 +140,4 @@ public class ObservableMapListener<K, V>
      * A set of active subscribers.
      */
     protected Set<Subscriber<? super MapEvent<? extends K, ? extends V>>> m_subscribers;
-
-    public static void main(String[] args) throws InterruptedException
-        {
-        WrapperNamedCache<Integer, String> cache = new WrapperNamedCache<>(new HashMap<>(), "test");
-
-        ObservableMapListener<Integer, String> listener = ObservableMapListener.create();
-        cache.addMapListener(listener);
-
-        ConnectableObservable<MapEvent<? extends Integer, ? extends String>> hot = listener.publish();
-        hot.connect();
-        Thread.sleep(600);
-
-        ConnectableObservable<MapEvent<? extends Integer, ? extends String>> observable = hot.replay();
-        observable.connect();
-        observable.subscribe(System.out::println);
-
-        cache.put(1, "one");
-        cache.put(2, "two");
-        cache.put(3, "three");
-        cache.put(2, "TWO");
-        cache.remove(3);
-
-        Thread.sleep(600);
-
-        observable.groupBy(MapEvent::getKey).subscribe(o -> o.buffer(1, TimeUnit.SECONDS).subscribe(System.out::println));
-        Thread.sleep(2000);
-        }
     }
