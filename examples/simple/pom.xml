@@ -4,13 +4,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.oracle.coherence</groupId>
-  <artifactId>cold-observable-examples</artifactId>
+  <artifactId>simple</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
-  <name>Cold Observable Coherence RX Examples</name>
+  <name>Simple Coherence RX Examples</name>
 
   <description>
-    Cold Observable Examples for The Reactive Extensions (RX) API for Oracle Coherence.
+    Simple Example for The Reactive Extensions (RX) API for Oracle Coherence.
   </description>
 
   <properties>
