@@ -8,7 +8,7 @@ This example shows how to use Oracle Coherence Reactive Extensions
 to return "cold" Observables from standard NamedCache operations.
 
 To turn a NamedCache into a RxNamedCache, do the following:
-```
+```java
    NamedCache<String, String> myMache = ...;
    
    RxNamedCache<String, String> rxCache = RxNamedCache.rx(myCache);
@@ -17,7 +17,7 @@ To turn a NamedCache into a RxNamedCache, do the following:
 Once you have an RxNamedCache, you can perform operations on the cache and
 an Observable will be returned from which you can perform standard RxJava
 operations such as:
-```
+```java
    // display all the trades
    rxCache.entrySet()
            .map(entry -> entry.getValue())

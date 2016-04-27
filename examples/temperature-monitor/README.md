@@ -9,7 +9,7 @@ to return "hot" Observables from standard NamedCache operations.
 
 Use the following to create "hot" Observables.
 
-```
+```java
    // create the listener
    ObservableMapListener listener = ObservableMapListener.create();
    
