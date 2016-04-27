@@ -1,20 +1,16 @@
-Oracle Coherence Reactive Extensions (RX) Examples
-==================================================
+# Oracle Coherence Reactive Extensions (RX) Examples
 
-Overview
---------
+## Overview
 
-This document describes the examples available for Coherence Reactive Extensions (Coherence-Rx).
+This document describes the examples available for Oracle Coherence Reactive Extensions (CoherenceRx).
 
-Prerequisites
--------------
+## Prerequisites
 
-Ensure that the prerequisites for the building of Coherence-Rx has been met.
+Ensure that the prerequisites for the building of CoherenceRx have been met.
   
-Examples
---------
+## Examples
 
-There are two examples available to show usage of Coherence-Rx:
+There are two examples available to show usage of CoherenceRx:
 - [Simple example](simple/README.md) - Demonstrates how to use Coherence caches as "cold" observables to perform simple operations 
 such as displaying, and aggregating information. 
 - [Temperature Monitor](temperature-monitor/README.md) - Demonstrates how to use Coherence caches as "hot" observables to subscribe and receive async events.

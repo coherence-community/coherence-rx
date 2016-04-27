@@ -2,7 +2,7 @@
 
 CoherenceRx project provides [reactive](http://reactivex.io/) API for [Oracle
 Coherence](https://www.oracle.com/middleware/coherence/index.html) in-memory data grid,
-based on a popular [RxJava](https://github.com/ReactiveX/RxJava) library.
+based on the popular [RxJava](https://github.com/ReactiveX/RxJava) library.
 
 It is implemented as a thin wrapper around [Oracle Coherence Asynchronous API](https://www.youtube.com/watch?v=xuUqV9ayBoU&index=4&list=PLxqhEJ4CA3JtazSZ0CI9JyriEjyHkb-9R),
 which implies that it requires Coherence 12.2.1 or a newer release.  
