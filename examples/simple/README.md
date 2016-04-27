@@ -42,11 +42,11 @@ The example can be run via either:
     
 1. IDE
     
-Import the "simple" example project into your IDE. Build and run com.oracle.coherence.rx.examples.simple.App.java
+   Import the "simple" example project into your IDE. Build and run com.oracle.coherence.rx.examples.simple.App.java
        
 2. Command line   
     
-After building the example, run the example using:
+   After building the example, run the example using:
 ```
    mvn exec:exec -DsimpleExample      
 ```

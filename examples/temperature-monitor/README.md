@@ -43,7 +43,7 @@ The example can be run via either:
     
 1. IDE
  
-   Import the "simple" example project into your IDE. Build and run com.oracle.coherence.rx.examples.temp.App.java
+   Import the "temperature-monitor" example project into your IDE and run **com.oracle.coherence.rx.examples.temp.App.java**.
        
 2. Command line   
     
@@ -56,9 +56,9 @@ This demonstration uses Oracle Tools to startup 3 cache servers that will be use
  See [coherence.java.net](coherence.java.net) for more information on Oracle Tools.
 
 Once the example is running, you will see two GUIs.
-1.  The *Data Generator* shows 3 Devices and once you click the "Start Emitting" button it will 
-    insert data into the cache.  You can change the temperature manually or generate random temperature
-    by checking the check-box.
-2.  The *Data Monitor* shows has various subscribers to the cache data to display 15, 30 and 60 second 
-    averages, current temperatures and trends. 
+- **Data Generator** shows 3 Devices and once you click the "Start Emitting" button it will 
+insert data into the cache.  You can change the temperature manually or generate random temperature
+by checking the check-box.
+- **Data Monitor** shows has various subscribers to the cache data to display 15, 30 and 60 second 
+averages, current temperatures and trends. 
         
