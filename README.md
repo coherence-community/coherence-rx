@@ -24,31 +24,31 @@ The easiest way to include CoherenceRx into your own project is to add it as a M
 (along with Coherence itself and RxJava):
 
 ```xml
-  <dependency>
-    <groupId>com.oracle.coherence</groupId>
-    <artifactId>coherence</artifactId>
-    <version>${coherence.version}</version>
-  </dependency>
+<dependency>
+  <groupId>com.oracle.coherence</groupId>
+  <artifactId>coherence</artifactId>
+  <version>${coherence.version}</version>
+</dependency>
 
-  <dependency>
-    <groupId>com.oracle.coherence</groupId>
-    <artifactId>coherence-rx</artifactId>
-    <version>${coherence-rx.version}</version>
-  </dependency>
+<dependency>
+  <groupId>com.oracle.coherence</groupId>
+  <artifactId>coherence-rx</artifactId>
+  <version>${coherence-rx.version}</version>
+</dependency>
 
-  <dependency>
-    <groupId>io.reactivex</groupId>
-    <artifactId>rxjava</artifactId>
-    <version>${rxjava.version}</version>
-  </dependency>
+<dependency>
+  <groupId>io.reactivex</groupId>
+  <artifactId>rxjava</artifactId>
+  <version>${rxjava.version}</version>
+</dependency>
 ```
 
 and configure versions within Maven `properties` section:
 
 ```xml
-  <coherence.version>12.2.1-0-0</coherence.version>
-  <coherence-rx.version>1.0.0</coherence-rx.version>
-  <rxjava.version>1.1.0</rxjava.version>
+<coherence.version>12.2.1-0-0</coherence.version>
+<coherence-rx.version>1.0.0</coherence-rx.version>
+<rxjava.version>1.1.0</rxjava.version>
 ```
 
 Once you have the necessary dependencies properly configured, you can use the static
@@ -141,65 +141,71 @@ The following sections describe the steps necessary to build CoherenceRx from th
 
 ### Prerequisites
 
-  In order to build or use the Coherence Reactive Extensions you must have the following installed:
+In order to build or use the Coherence Reactive Extensions you must have the following installed:
 
-  1. Java 8 SE Development Kit or Runtime environment.
+1. Java 8 SE Development Kit or Runtime environment.
 
-     You can download the software from:
+   You can download the software from:
      - [Java SE Development Kit](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
      - [Java SE Runtime Environment](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html)
 
-  2. Maven version 3.0.5 or above installed and configured.
-  3. Coherence 12.2.1.0.0 or above installed.
+2. Maven version 3.0.5 or above installed and configured.
+3. Coherence 12.2.1.0.0 or above installed.
 
-  Ensure the following environment variables are set:
+Ensure the following environment variables are set:
 
-  `JAVA_HOME` -- Make sure that the `JAVA_HOME` environment variable points to the location of a JDK supported by the
-  Oracle Coherence version you are using.
+`JAVA_HOME` -- Make sure that the `JAVA_HOME` environment variable points to the
+location of a JDK supported by the Oracle Coherence version you are using.
 
-  `COHERENCE_HOME` -- Make sure `COHERENCE_HOME` is set to point to your Coherence install directory. This is only required for the Maven `install-file` commands.
+`COHERENCE_HOME` -- Make sure `COHERENCE_HOME` is set to point to your Coherence
+install directory. This is only required for the Maven `install-file` commands.
 
-  `MAVEN_HOME` -- If `mvn` command is not in your path then you should set `MAVEN_HOME` and then add `MAVEN_HOME\bin` to your `PATH` in a similar way to Java being added to the path below.
+`MAVEN_HOME` -- If `mvn` command is not in your path then you should set `MAVEN_HOME`
+and then add `MAVEN_HOME\bin` to your `PATH` in a similar way to Java being added
+to the path below.
 
-  You must also ensure the java command is in the path.
+You must also ensure the java command is in the path.
 
-  E.g. for Linux/UNIX/Mac:
+E.g. for Linux/UNIX/Mac:
 ```
-  export PATH=$JAVA_HOME/bin:$PATH
+export PATH=$JAVA_HOME/bin:$PATH
 ```
-  For Windows:
+For Windows:
 ```    
-  set PATH=%JAVA_HOME%\bin;%PATH%
+set PATH=%JAVA_HOME%\bin;%PATH%
 ```
-  You must have Coherence installed into your local Maven repository. If you
-  do not, then carry out the following, replacing the version number with the version
-  of Coherence you have installed.
+You must have Coherence installed into your local Maven repository. If you do not,
+then carry out the following, replacing the version number with the version of
+Coherence you have installed.
 
-  E.g. for Linux/UNIX/Mac:
+E.g. for Linux/UNIX/Mac:
 ```
-    mvn install:install-file\
-        -Dfile=$COHERENCE_HOME/lib/coherence.jar\
-        -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence/12.2.1/coherence.12.2.1.pom
+mvn install:install-file\
+    -Dfile=$COHERENCE_HOME/lib/coherence.jar\
+    -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence/12.2.1/coherence.12.2.1.pom
 ```
-  E.g. for Windows:
+
+E.g. for Windows:
 ```
-    mvn install:install-file\
-        -Dfile=%COHERENCE_HOME%\lib\coherence.jar\
-        -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence\12.2.1\coherence.12.2.1.pom
+mvn install:install-file\
+    -Dfile=%COHERENCE_HOME%\lib\coherence.jar\
+    -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence\12.2.1\coherence.12.2.1.pom
 ```
+
 ### Build Instructions
 
-  Build the Coherence Reactive Extensions by using:
-```
-     mvn clean install
-```
-  The target directory will contain a number of files:
+Build the Coherence Reactive Extensions by running:
 
-     coherence-rx-x.y.z.jar          - JAR file
-     coherence-rx-x.y.z-javadoc.jar  - javadoc
-     coherence-rx-x.y.z-sources.jar  - sources
-
-    (where x.y.x are the current version of the Coherence Reactive Extensions)
+```
+mvn clean install
+```
+The target directory will contain a number of files:
+```
+coherence-rx-x.y.z.jar          - JAR file
+coherence-rx-x.y.z-javadoc.jar  - javadoc
+coherence-rx-x.y.z-sources.jar  - sources
+```
+(where x.y.z is the current version of the Coherence Reactive Extensions)
 
 ## References
 
