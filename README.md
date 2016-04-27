@@ -115,7 +115,7 @@ cache.addMapListener(listener);
 Of course, the above is not very interesting, and could be easily achieved using
 standard `SimpleMapListener` as well. But it becomes a lot more interesting
 when you start applying various RxJava [operators](http://reactivex.io/documentation/operators.html)
-to transform, filter and even combine event streams.
+to transform, filter and even combine event streams:
 
 ```java
 ObservableMapListener<Long, Trade> listener = ObservableMapListener.create();
