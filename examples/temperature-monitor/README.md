@@ -49,7 +49,7 @@ The example can be run via either:
     
    After building the example, run the example using:
 ```
-   mvn exec:exec -DtemperatureMonitor     
+   mvn exec:exec -DrunExample     
 ```
 
 This demonstration uses Oracle Tools to startup 3 cache servers that will be used to store data.

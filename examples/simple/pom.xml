@@ -88,10 +88,10 @@
   <profiles>
     <!-- run the simple example -->
     <profile>
-      <id>simpleExample</id>
+      <id>runExample</id>
       <activation>
         <property>
-          <name>simpleExample</name>
+          <name>runExample</name>
         </property>
       </activation>
       <build>

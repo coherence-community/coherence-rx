@@ -88,10 +88,10 @@
  <profiles>
     <!-- run the temperature monitor example -->
     <profile>
-      <id>temperatureMonitor</id>
+      <id>runExample</id>
       <activation>
         <property>
-          <name>temperatureMonitor</name>
+          <name>runExample</name>
         </property>
       </activation>
       <build>

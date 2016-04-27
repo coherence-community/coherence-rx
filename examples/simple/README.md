@@ -48,5 +48,5 @@ The example can be run via either:
     
    After building the example, run the example using:
 ```
-   mvn exec:exec -DsimpleExample      
+   mvn exec:exec -DrunExample      
 ```
