@@ -15,7 +15,7 @@ pointed out in [his excellent tutorial](https://gist.github.com/staltz/868e7e9bc
 ![Everything is a Stream](https://gist.githubusercontent.com/staltz/868e7e9bc2a7b8c1f754/raw/35cc1edb69b7175fd1308800a244410890bc9b5f/zmantra.jpg)
 
 When you are writing reactive application and need to access data source that doesn't provide
-a reactive API, life can get complicated, so in order to simplify our users' lives we decided
+a reactive API, life can get complicated. In order to simplify our users' lives we decided
 to implement CoherenceRx and release it as an open source add-on for Coherence.
 
 ## Using CoherenceRx
