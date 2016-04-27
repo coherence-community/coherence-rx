@@ -178,12 +178,14 @@ The following sections describe the steps necessary to build CoherenceRx from th
   E.g. for Linux/UNIX/Mac:
 ```
     mvn install:install-file\
-        -Dfile=$COHERENCE_HOME/lib/coherence.jar\      -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence/12.2.1/coherence.12.2.1.pom
+        -Dfile=$COHERENCE_HOME/lib/coherence.jar\
+        -DpomFile=$COHERENCE_HOME/plugins/maven/com/oracle/coherence/coherence/12.2.1/coherence.12.2.1.pom
 ```
   E.g. for Windows:
 ```
     mvn install:install-file\
-        -Dfile=%COHERENCE_HOME%\lib\coherence.jar\      -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence\12.2.1\coherence.12.2.1.pom
+        -Dfile=%COHERENCE_HOME%\lib\coherence.jar\
+        -DpomFile=%COHERENCE_HOME%\plugins\maven\com\oracle\coherence\coherence\12.2.1\coherence.12.2.1.pom
 ```
 ### Build Instructions
 
