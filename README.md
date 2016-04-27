@@ -127,12 +127,12 @@ listener.filter(evt -> evt.getId() == MapEvent.ENTRY_INSERTED)
 cache.addMapListener(listener);
 ```
 
-It is important to note that unlike `Observable`s returned by the `RxNamedCache`
+It is important to note that unlike `Observables` returned by the `RxNamedCache`
 methods, which are 'cold', the `ObservableMapListener` is a 'hot' `Observable`
 and will start receiving and processing the events as soon as it is registered
 with the cache using `NamedCache.addMapListener` method.
 
-Because of that, it is important that you add `Subscriber`s to it *before* calling
+Because of that, it is important that you add `Subscribers` to it *before* calling
 `NamedCache.addMapListener`, or you could miss some events.
 
 ## Building CoherenceRx
