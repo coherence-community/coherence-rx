@@ -49,7 +49,7 @@ import rx.subscriptions.Subscriptions;
  * @author Aleksandar Seovic  2015.02.22
  */
 public class ObservableMapListener<K, V>
-        extends Observable<MapEvent<? extends K, ? extends V>>
+        extends Observable<MapEvent<K, V>>
         implements MapListener<K, V>
     {
     // ---- constructors ----------------------------------------------------
@@ -61,7 +61,7 @@ public class ObservableMapListener<K, V>
      */
     public static <K, V> ObservableMapListener<K, V> create()
         {
-        Set<Subscriber<? super MapEvent<? extends K, ? extends V>>> subscribers = new CopyOnWriteArraySet<>();
+        Set<Subscriber<? super MapEvent<K, V>>> subscribers = new CopyOnWriteArraySet<>();
 
         return new ObservableMapListener<>(subscriber ->
                        {
@@ -80,8 +80,8 @@ public class ObservableMapListener<K, V>
      * @param onSubscribe  the function to execute when {@link #subscribe(Subscriber)} is called
      * @param subscribers  the set of registered subscribers
      */
-    protected ObservableMapListener(Observable.OnSubscribe<MapEvent<? extends K, ? extends V>> onSubscribe,
-                                    Set<Subscriber<? super MapEvent<? extends K, ? extends V>>> subscribers)
+    protected ObservableMapListener(Observable.OnSubscribe<MapEvent<K, V>> onSubscribe,
+                                    Set<Subscriber<? super MapEvent<K, V>>> subscribers)
         {
         super(onSubscribe);
 
@@ -139,5 +139,5 @@ public class ObservableMapListener<K, V>
     /**
      * A set of active subscribers.
      */
-    protected Set<Subscriber<? super MapEvent<? extends K, ? extends V>>> m_subscribers;
+    protected Set<Subscriber<? super MapEvent<K, V>>> m_subscribers;
     }

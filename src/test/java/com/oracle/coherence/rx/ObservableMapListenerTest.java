@@ -20,7 +20,6 @@ package com.oracle.coherence.rx;
 
 
 import com.oracle.tools.junit.CoherenceClusterOrchestration;
-import com.oracle.tools.junit.SessionBuilder;
 import com.oracle.tools.junit.SessionBuilders;
 
 import com.oracle.tools.runtime.LocalPlatform;
@@ -100,7 +99,7 @@ public class ObservableMapListenerTest
         latch.await();
         }
 
-    private void assertEvent(MapEvent<Integer, String> expected, MapEvent<? extends Integer, ? extends String> actual)
+    private void assertEvent(MapEvent<Integer, String> expected, MapEvent<Integer, String> actual)
         {
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getKey(), actual.getKey());
