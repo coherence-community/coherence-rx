@@ -15,6 +15,6 @@ Examples
 --------
 
 There are two examples available to show usage of Coherence-Rx:
-- Simple example - Demonstrates how to use Coherence caches as "cold" observables to perform simple operations 
+- [Simple example](simple/README.md) - Demonstrates how to use Coherence caches as "cold" observables to perform simple operations 
 such as displaying, and aggregating information. 
-- Temperature Monitor - Demonstrates how to use Coherence caches as "hot" observables to subscribe and receive async events.
+- [Temperature Monitor](temperature-monitor/README.md) - Demonstrates how to use Coherence caches as "hot" observables to subscribe and receive async events.

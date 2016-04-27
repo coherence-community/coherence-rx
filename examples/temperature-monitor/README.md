@@ -56,9 +56,9 @@ This demonstration uses Oracle Tools to startup 3 cache servers that will be use
  See [coherence.java.net](coherence.java.net) for more information on Oracle Tools.
 
 Once the example is running, you will see two GUIs.
-- **Data Generator** shows 3 Devices and once you click the "Start Emitting" button it will 
+- **Data Generator** - shows 3 Devices and once you click the "Start Emitting" button it will 
 insert data into the cache.  You can change the temperature manually or generate random temperature
 by checking the check-box.
-- **Data Monitor** shows has various subscribers to the cache data to display 15, 30 and 60 second 
+- **Data Monitor** - uses various subscribers to the cache data to display 15, 30 and 60 second 
 averages, current temperatures and trends. 
         
