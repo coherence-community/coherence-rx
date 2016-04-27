@@ -19,7 +19,7 @@ Use the following to create "hot" Observables.
            .subscribe(System.out::println); 
    
    // Add the listener to the cache
-   myCache.addMapListener(m_listener);
+   myCache.addMapListener(listener);
    
 ```  
 

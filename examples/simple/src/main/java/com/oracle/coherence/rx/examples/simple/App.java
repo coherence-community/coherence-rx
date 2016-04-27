@@ -31,6 +31,7 @@ import java.util.Random;
 
 import static com.oracle.coherence.rx.RxNamedCache.rx;
 import static com.tangosol.util.Filters.equal;
+import static com.tangosol.util.Filters.less;
 
 
 /**
@@ -57,6 +58,7 @@ public class App
                 TypeAssertion.withTypes(UUID.class, Trade.class));
 
         cache.addIndex(Trade::getSymbol, true, null);
+        cache.addIndex(Trade::getPrice, true, null);
 
         RxNamedCache<UUID, Trade> rxCache = rx(cache);
 
@@ -68,7 +70,7 @@ public class App
                .subscribe(size -> System.out.println("Size is " + size ));
 
         // sleep only required to allowing us to see output separately
-        Thread.sleep(5000L);
+        sleep(5000L);
 
         // display all the trades
         rxCache.entrySet()
@@ -76,7 +78,7 @@ public class App
                .subscribe(System.out::println);
 
         // sleep only required to allowing us to see output separately
-        Thread.sleep(5000L);
+        sleep(10000L);
 
         // display only trades from ORCL using filter
         rxCache.entrySet(equal(Trade::getSymbol, "ORCL"))
@@ -84,19 +86,38 @@ public class App
                .subscribe(trade -> System.out.println("ORCL Trades: " + trade));
 
         // sleep only required to allowing us to see output separately
-        Thread.sleep(5000L);
+        sleep(5000L);
 
         // get total value of ORCL trades using coherence filter in entrySet
         MathObservable.averageDouble(rxCache.entrySet(equal(Trade::getSymbol, "ORCL"))
                                             .map(entry -> entry.getValue().getPurchaseValue()))
-                      .subscribe(total -> System.out.println("Average of ORCL trades: " + String.format("%10.2f", total)));
+                      .subscribe(total -> System.out.println("Average Purchase Value of ORCL trades: " + String.format("$%10.2f", total)));
 
-        // sleep for enough time to let values complete
-        System.out.println("Sleeping 10");
-        Thread.sleep(10000L);
+        // sleep only required to allowing us to see output separately
+        sleep(5000L);
+
+        // get number trades with purchase price < $30
+        rxCache.keySet(less(Trade::getPrice, 30d))
+               .count()
+               .subscribe(result -> System.out.println("Number of trades purchased below $30.00 is " + result));
+
+        sleep(10000L);
 
         System.exit(0);
     }
+
+    /**
+     * Sleep for a number of millis and display a message.
+     *
+     * @param ldtMillis   millis to sleep
+     *
+     * @throws InterruptedException
+     */
+    private static void sleep(long ldtMillis) throws InterruptedException
+        {
+        System.out.println("Sleeping " + ldtMillis + "ms");
+        Thread.sleep(ldtMillis);
+        }
 
     /**
      * Create "count" positions in the cache at the current price.
@@ -112,7 +133,7 @@ public class App
             {
             String sSymbol = SYMBOLS[random.nextInt(SYMBOLS.length)];
             int    nAmount = random.nextInt(1000) + 1;
-            double nPrice  = random.nextFloat() * (MAX_FACTOR - MIN_FACTOR) + MIN_FACTOR * INITIAL_PRICE;
+            double nPrice  = random.nextFloat() * ((MAX_FACTOR - MIN_FACTOR) + MIN_FACTOR) * INITIAL_PRICE;
 
             Trade  trade  = new Trade(sSymbol, nAmount, nPrice);
 

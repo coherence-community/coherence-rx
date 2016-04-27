@@ -112,7 +112,7 @@ public class Trade implements Serializable
                "id=" + f_id +
                ", symbol='" + f_sSymbol + '\'' +
                ", amount=" + f_nAmount +
-               ", price=" + f_nPrice +
+               ", price=" + String.format("$%-4.2f", f_nPrice) +
                '}';
         }
 
