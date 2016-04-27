@@ -73,7 +73,7 @@ public class App
         // display all the trades
         rxCache.entrySet()
                .map(entry -> entry.getValue())
-               .subscribe(trade -> System.out.println("All Trades: " + trade));
+               .subscribe(System.out::println);
 
         // sleep only required to allowing us to see output separately
         Thread.sleep(5000L);

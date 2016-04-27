@@ -105,21 +105,21 @@ public class DataMonitor
             // get an average of the last 15 seconds of readings for each device
             m_listener.map(entry -> entry.getNewEntry().getValue())
                 .filter(reading -> reading.getDeviceId().equals(device))
-                .map(DeviceReading::getReading)
+                .map(DeviceReading::getTemperature)
                 .buffer(15, TimeUnit.SECONDS)
                 .subscribe(list -> atxtAvgLast15Seconds[nIndex].setText(String.format(FORMAT, getAverage(list))));
 
             // get an average of the last 30 seconds of readings for each device
             m_listener.map(entry -> entry.getNewEntry().getValue())
                 .filter(reading -> reading.getDeviceId().equals(device))
-                .map(DeviceReading::getReading)
+                .map(DeviceReading::getTemperature)
                 .buffer(30, TimeUnit.SECONDS)
                 .subscribe(list -> atxtAvgLast30Seconds[nIndex].setText(String.format(FORMAT, getAverage(list))));
 
             // get an average of the last 60 seconds of readings for each device
             m_listener.map(entry -> entry.getNewEntry().getValue())
                 .filter(reading -> reading.getDeviceId().equals(device))
-                .map(DeviceReading::getReading)
+                .map(DeviceReading::getTemperature)
                 .buffer(60, TimeUnit.SECONDS)
                 .subscribe(list -> updateTrends(nIndex, list));
             }
@@ -211,10 +211,10 @@ public class DataMonitor
         // row 8 - blank line
 
         blankLine(pnlDetail);
-        // row 8 - items txtProcessed
+        // row 8 - items processed
 
         pnlDetail.add(new JLabel(""));
-        pnlDetail.add(new JLabel("Readings txtProcessed"));
+        pnlDetail.add(new JLabel("Readings Processed"));
         txtProcessed = getTextField(7, JTextField.CENTER);
         pnlDetail.add(txtProcessed);
         pnlDetail.add(new JLabel(""));
@@ -268,7 +268,7 @@ public class DataMonitor
      */
     private void updateTemp(DeviceReading reading)
         {
-        int temp = reading.getReading();
+        int temp = reading.getTemperature();
         int deviceNumber = getDeviceIndex(reading.getDeviceId());
         atxtDeviceTemp[deviceNumber].setText(String.format(FORMAT, temp * 1.0f));
 
@@ -312,9 +312,10 @@ public class DataMonitor
      */
     private void updateTrends(int nDeviceIndex, List<Integer> listValues )
         {
-        if (listValues == null)
+        if (listValues == null || listValues.size() == 0)
             {
-            throw new IllegalArgumentException("list of values must not be null");
+            atxtAvgLast60Seconds[nDeviceIndex].setText(String.format(FORMAT, 0.0f));
+            return;
             }
 
         // update the given average value

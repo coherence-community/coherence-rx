@@ -184,7 +184,7 @@ public class DataGenerator
 
         pnlAction.add(btnControl);
 
-        chkRandomize = new JCheckBox("chkRandomize Temperature");
+        chkRandomize = new JCheckBox("Randomize Temperature");
         chkRandomize.setMnemonic(KeyEvent.VK_R);
         chkRandomize.setSelected(false);
         pnlAction.add(chkRandomize);

@@ -38,15 +38,15 @@ public class DeviceReading implements Serializable
     /**
      * Construct a new ReviceReading.
      *
-     * @param nDeviceId  Device Id to record reading for
-     * @param nReading   the temperature reading to record
+     * @param nDeviceId     Device Id to record reading for
+     * @param nTemperature  temperature reading to record
      */
-    public DeviceReading(String nDeviceId, int nReading)
+    public DeviceReading(String nDeviceId, int nTemperature)
         {
         f_id  = new UUID();
         f_nDeviceId = nDeviceId;
         f_ltdTimestamp = Base.getLastSafeTimeMillis();
-        f_nReading = nReading;
+        f_nTemperature = nTemperature;
         }
 
     // ----- accessors -------------------------------------------------------
@@ -86,9 +86,9 @@ public class DeviceReading implements Serializable
      *
      * @return the reading
      */
-    public int getReading()
+    public int getTemperature()
         {
-        return f_nReading;
+        return f_nTemperature;
         }
 
     // ----- Object methods -------------------------------------------------
@@ -100,7 +100,7 @@ public class DeviceReading implements Serializable
                "id=" + f_id +
                ", deviceId='" + f_nDeviceId + '\'' +
                ", ts=" + new Date(f_ltdTimestamp) +
-               ", reading=" + f_nReading +
+               ", temp=" + f_nTemperature +
                '}';
         }
 
@@ -124,5 +124,5 @@ public class DeviceReading implements Serializable
     /**
      * The temperature reading recorded.
      */
-    private final int f_nReading;
+    private final int f_nTemperature;
     }
