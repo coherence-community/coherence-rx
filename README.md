@@ -213,3 +213,7 @@ coherence-rx-x.y.z-sources.jar  - sources
    - [Download Coherence](http://www.oracle.com/technetwork/middleware/coherence/downloads/index.html)
    - [Coherence Documentation](http://docs.oracle.com/middleware/1221/coherence/index.html)
    - [Coherence Community](http://coherence.java.net/)
+
+## License
+
+[The Universal Permissive License (UPL), Version 1.0](LICENSE.md)
