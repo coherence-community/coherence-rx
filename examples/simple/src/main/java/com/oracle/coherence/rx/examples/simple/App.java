@@ -20,16 +20,23 @@ package com.oracle.coherence.rx.examples.simple;
 
 
 import com.oracle.coherence.rx.RxNamedCache;
+
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.NamedCache;
 import com.tangosol.net.cache.TypeAssertion;
+
 import com.tangosol.util.UUID;
+
+import java.util.Map;
 import rx.observables.MathObservable;
 
 import java.util.HashMap;
 import java.util.Random;
 
 import static com.oracle.coherence.rx.RxNamedCache.rx;
+
+import static com.tangosol.net.cache.TypeAssertion.withTypes;
+
 import static com.tangosol.util.Filters.equal;
 import static com.tangosol.util.Filters.less;
 
@@ -38,10 +45,9 @@ import static com.tangosol.util.Filters.less;
  * Driver for "simple" Coherence-Rx example.
  * <p>
  * This example shows how to use Reactive Extensions (RxJava) programming model
- * via Coherence-Rx to access Coherence caches via {@link RxNamedCache} interface.
+ * via CoherenceRx to access Coherence caches via {@link RxNamedCache} interface.
  * <p>
  * These examples demonstrate "cold" Observables.
- *
  *
  * @author Tim Middleton  2016.04.27
  */
@@ -54,8 +60,8 @@ public class App
         {
         System.setProperty("coherence.distributed.localstorage", "true");
 
-        NamedCache<UUID, Trade> cache = CacheFactory.getTypedCache("trades",
-                TypeAssertion.withTypes(UUID.class, Trade.class));
+        NamedCache<UUID, Trade> cache =
+                CacheFactory.getTypedCache("trades", withTypes(UUID.class, Trade.class));
 
         cache.addIndex(Trade::getSymbol, true, null);
         cache.addIndex(Trade::getPrice, true, null);
@@ -67,57 +73,33 @@ public class App
 
         // get count of total positions
         rxCache.size()
-               .subscribe(size -> System.out.println("Size is " + size ));
-
-        // sleep only required to allowing us to see output separately
-        sleep(5000L);
+               .toBlocking()
+               .subscribe(size -> System.out.println("Size is " + size));
 
         // display all the trades
         rxCache.entrySet()
-               .map(entry -> entry.getValue())
+               .map(Map.Entry::getValue)
+               .toBlocking()
                .subscribe(System.out::println);
-
-        // sleep only required to allowing us to see output separately
-        sleep(10000L);
 
         // display only trades from ORCL using filter
         rxCache.entrySet(equal(Trade::getSymbol, "ORCL"))
-               .map(entry -> entry.getValue())
-               .subscribe(trade -> System.out.println("ORCL Trades: " + trade));
+               .map(Map.Entry::getValue)
+               .toBlocking()
+               .subscribe(trade -> System.out.println("ORCL trade: " + trade));
 
-        // sleep only required to allowing us to see output separately
-        sleep(5000L);
-
-        // get total value of ORCL trades using coherence filter in entrySet
-        MathObservable.averageDouble(rxCache.entrySet(equal(Trade::getSymbol, "ORCL"))
-                                            .map(entry -> entry.getValue().getPurchaseValue()))
-                      .subscribe(total -> System.out.println("Average Purchase Value of ORCL trades: " + String.format("$%10.2f", total)));
-
-        // sleep only required to allowing us to see output separately
-        sleep(5000L);
+        // get total value of ORCL trades using Coherence filter in values() call
+        MathObservable.averageDouble(rxCache.values(equal(Trade::getSymbol, "ORCL"))
+                                            .map(trade -> trade.getPurchaseValue())
+                                            .toBlocking())
+                      .subscribe(total -> System.out.printf("Average Purchase Value of ORCL trades: $%10.2f\n", total)));
 
         // get number trades with purchase price < $30
         rxCache.keySet(less(Trade::getPrice, 30d))
                .count()
+               .toBlocking()
                .subscribe(result -> System.out.println("Number of trades purchased below $30.00 is " + result));
-
-        sleep(10000L);
-
-        System.exit(0);
     }
-
-    /**
-     * Sleep for a number of millis and display a message.
-     *
-     * @param ldtMillis   millis to sleep
-     *
-     * @throws InterruptedException
-     */
-    private static void sleep(long ldtMillis) throws InterruptedException
-        {
-        System.out.println("Sleeping " + ldtMillis + "ms");
-        Thread.sleep(ldtMillis);
-        }
 
     /**
      * Create "count" positions in the cache at the current price.
