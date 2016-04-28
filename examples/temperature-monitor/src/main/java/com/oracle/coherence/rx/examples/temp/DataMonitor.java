@@ -133,7 +133,7 @@ public class DataMonitor
      */
     private void showGUI()
         {
-        JFrame frmMain = new JFrame("Coherence-Rx Demo - Data Monitor");
+        JFrame frmMain = new JFrame("CoherenceRx Demo - Data Monitor");
         frmMain.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         // remove the map listener on exit

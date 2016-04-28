@@ -13,7 +13,7 @@
   <artifactId>coherence-rx</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
-  <name>Coherence RX</name>
+  <name>CoherenceRx</name>
 
   <description>
     The Reactive Extensions (RX) API for Oracle Coherence.
@@ -36,13 +36,8 @@
 
     <!-- plugin dependency versions -->
     <maven.compiler.plugin.version>3.1</maven.compiler.plugin.version>
-    <maven.deploy.plugin.version>2.8.2</maven.deploy.plugin.version>
     <maven.enforcer.plugin.version>1.3.1</maven.enforcer.plugin.version>
-    <maven.flatten.plugin.version>1.0.0</maven.flatten.plugin.version>
-    <maven.gpg.plugin.version>1.5</maven.gpg.plugin.version>
-    <maven.install.plugin.version>2.5.2</maven.install.plugin.version>
     <maven.javadoc.plugin.version>2.9.1</maven.javadoc.plugin.version>
-    <maven.release.plugin.version>2.5</maven.release.plugin.version>
     <maven.source.plugin.version>2.2.1</maven.source.plugin.version>
     <maven.surefire.plugin.version>2.17</maven.surefire.plugin.version>
     <maven.compiler.plugin.version>3.1</maven.compiler.plugin.version>
@@ -104,17 +99,6 @@
     </developer>
   </developers>
 
-  <scm>
-    <connection>
-      scm:git:https://github.com/coherence-community/coherence-rx.git
-    </connection>
-    <developerConnection>
-      scm:git:https://github.com/coherence-community/coherence-rx.git
-    </developerConnection>
-    <url>https://github.com/coherence-community/coherence-rx.git</url>
-    <tag>HEAD</tag>
-  </scm>
-
   <build>
     <plugins>
       <plugin>
@@ -151,39 +135,6 @@
         </executions>
       </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <version>${maven.deploy.plugin.version}</version>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-release-plugin</artifactId>
-        <version>${maven.release.plugin.version}</version>
-        <configuration>
-          <autoVersionSubmodules>true</autoVersionSubmodules>
-          <goals>deploy</goals>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-gpg-plugin</artifactId>
-        <version>${maven.gpg.plugin.version}</version>
-        <configuration>
-          <skip>${skip-sign-artifacts}</skip>
-        </configuration>
-        <executions>
-          <execution>
-            <id>sign-artifacts</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>sign</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 </project>

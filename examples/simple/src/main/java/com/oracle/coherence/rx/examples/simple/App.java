@@ -90,15 +90,17 @@ public class App
 
         // get total value of ORCL trades using Coherence filter in values() call
         MathObservable.averageDouble(rxCache.values(equal(Trade::getSymbol, "ORCL"))
-                                            .map(trade -> trade.getPurchaseValue())
-                                            .toBlocking())
-                      .subscribe(total -> System.out.printf("Average Purchase Value of ORCL trades: $%10.2f\n", total)));
+                                            .map(trade -> trade.getPurchaseValue()))
+                      .toBlocking()
+                      .subscribe(total -> System.out.printf("Average Purchase Value of ORCL trades: $%10.2f\n", total));
 
         // get number trades with purchase price < $30
         rxCache.keySet(less(Trade::getPrice, 30d))
                .count()
                .toBlocking()
                .subscribe(result -> System.out.println("Number of trades purchased below $30.00 is " + result));
+
+        System.exit(0);
     }
 
     /**
