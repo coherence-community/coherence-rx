@@ -3,7 +3,7 @@
 This example shows how to use `RxNamedCache` interface to create 'cold' `Observables`
 and perform simple operations such as querying and aggregating data stored in Coherence.
 
-To turn a NamedCache into a RxNamedCache, do the following:
+To turn a `NamedCache` into a `RxNamedCache`, do the following:
 
 ```java
 NamedCache<String, String>   myCache = ...;

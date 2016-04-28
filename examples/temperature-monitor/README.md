@@ -54,7 +54,7 @@ Once the example is running, you will see two GUI windows:
 
 - **Data Generator**
 
-  ![Screenshot](data-gen.png)
+  ![Screenshot](images/data-gen.png)
 
   Shows 3 Devices and once you click the `Start Emitting` button it will insert
   data into the cache.  You can change the temperature manually or generate
@@ -62,7 +62,7 @@ Once the example is running, you will see two GUI windows:
 
 - **Data Monitor**
 
-  ![Screenshot](data-monitor.png)
+  ![Screenshot](images/data-monitor.png)
 
   Uses multiple subscribers to the event stream to display 15, 30 and 60 second
   averages, current temperatures and trends.
