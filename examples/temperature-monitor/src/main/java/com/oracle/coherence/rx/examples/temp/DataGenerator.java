@@ -81,7 +81,7 @@ public class DataGenerator
      */
     private void showGUI()
         {
-        JFrame frmMain = new JFrame("Coherence-Rx Demo - Data Generator");
+        JFrame frmMain = new JFrame("CoherenceRx Demo - Data Generator");
         frmMain.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JComponent pneContent = (JComponent) frmMain.getContentPane();
