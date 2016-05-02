@@ -19,11 +19,12 @@
 package com.oracle.coherence.rx;
 
 
-import com.oracle.tools.junit.CoherenceClusterOrchestration;
-import com.oracle.tools.junit.SessionBuilders;
+import com.oracle.bedrock.junit.CoherenceClusterOrchestration;
+import com.oracle.bedrock.junit.SessionBuilder;
+import com.oracle.bedrock.junit.SessionBuilders;
 
-import com.oracle.tools.runtime.LocalPlatform;
-import com.oracle.tools.runtime.java.options.SystemProperty;
+import com.oracle.bedrock.runtime.LocalPlatform;
+import com.oracle.bedrock.runtime.java.options.SystemProperty;
 
 import com.tangosol.net.ConfigurableCacheFactory;
 import com.tangosol.net.NamedCache;
@@ -52,12 +53,15 @@ public class ObservableMapListenerTest
     @ClassRule
     public static final CoherenceClusterOrchestration ORCHESTRATION =
             new CoherenceClusterOrchestration().withOptions(
-                    SystemProperty.of("coherence.nameservice.address", LocalPlatform.get().getLoopbackAddress().getHostAddress())
+                    SystemProperty.of("coherence.nameservice.address",
+                                      LocalPlatform.get().getLoopbackAddress().getHostAddress())
             );
+
+    public static final SessionBuilder MEMBER = SessionBuilders.storageDisabledMember();
 
     protected <K, V> NamedCache<K, V> getNamedCache()
         {
-        ConfigurableCacheFactory cacheFactory = ORCHESTRATION.getSessionFor(SessionBuilders.storageDisabledMember());
+        ConfigurableCacheFactory cacheFactory = ORCHESTRATION.getSessionFor(MEMBER);
         NamedCache               cache        = cacheFactory.ensureCache("test", null);
 
         cache.clear();
