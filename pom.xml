@@ -7,10 +7,10 @@
   <artifactId>coherence-rx</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
-  <name>Coherence RX</name>
+  <name>CoherenceRx</name>
 
   <description>
-    The Reactive Extensions (RX) API for Oracle Coherence.
+    The Reactive Extensions (RxJava) API for Oracle Coherence.
   </description>
 
   <prerequisites>
