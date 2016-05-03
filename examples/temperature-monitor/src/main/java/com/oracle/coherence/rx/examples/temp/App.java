@@ -19,25 +19,27 @@
 package com.oracle.coherence.rx.examples.temp;
 
 
-import com.oracle.coherence.rx.RxNamedCache;
-import com.oracle.tools.Options;
-import com.oracle.tools.junit.StorageDisabledMember;
-import com.oracle.tools.runtime.LocalPlatform;
-import com.oracle.tools.runtime.coherence.CoherenceCluster;
-import com.oracle.tools.runtime.coherence.CoherenceClusterBuilder;
-import com.oracle.tools.runtime.coherence.CoherenceClusterMember;
-import com.oracle.tools.runtime.coherence.options.ClusterName;
-import com.oracle.tools.runtime.coherence.options.Logging;
-import com.oracle.tools.runtime.console.SystemApplicationConsole;
+import com.oracle.bedrock.Options;
+import com.oracle.bedrock.junit.StorageDisabledMember;
+import com.oracle.bedrock.runtime.LocalPlatform;
+import com.oracle.bedrock.runtime.coherence.CoherenceCluster;
+import com.oracle.bedrock.runtime.coherence.CoherenceClusterBuilder;
+import com.oracle.bedrock.runtime.coherence.CoherenceClusterMember;
+import com.oracle.bedrock.runtime.coherence.options.ClusterName;
+import com.oracle.bedrock.runtime.coherence.options.Logging;
+import com.oracle.bedrock.runtime.console.SystemApplicationConsole;
+import com.oracle.bedrock.runtime.java.options.HeapSize;
 
-import com.oracle.tools.runtime.java.options.HeapSize;
+import com.oracle.coherence.rx.RxNamedCache;
+
 import com.tangosol.net.ConfigurableCacheFactory;
 import com.tangosol.net.NamedCache;
 import com.tangosol.net.cache.TypeAssertion;
+
 import com.tangosol.util.UUID;
 
-import static com.oracle.tools.deferred.DeferredHelper.invoking;
-import static com.oracle.tools.deferred.Eventually.assertThat;
+import static com.oracle.bedrock.deferred.DeferredHelper.invoking;
+import static com.oracle.bedrock.deferred.Eventually.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 
 
@@ -68,13 +70,9 @@ public class App
         {
         int nClusterSize = 3;
 
-        // use oracle-tools to startup 3 cache servers using the LocalPlaform (machine)
-        LocalPlatform platform = LocalPlatform.get();
-
         // create a new builder and include what we want to build
         CoherenceClusterBuilder builder = new CoherenceClusterBuilder();
         builder.include(nClusterSize,
-                        platform,
                         CoherenceClusterMember.class,
                         Logging.at(2),
                         HeapSize.initial(1, HeapSize.Units.GB),
@@ -94,7 +92,7 @@ public class App
 
             // start storage-disabled client and get the CCF
             Options options = clusterMember.getOptions();
-            ConfigurableCacheFactory ccf = new StorageDisabledMember().build(platform, null, options.asArray());
+            ConfigurableCacheFactory ccf = new StorageDisabledMember().build(LocalPlatform.get(), null, options.asArray());
 
             // obtain named cache from the client
             NamedCache<UUID, DeviceReading> cache =

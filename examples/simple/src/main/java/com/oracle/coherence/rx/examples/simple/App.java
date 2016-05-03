@@ -28,10 +28,10 @@ import com.tangosol.net.cache.TypeAssertion;
 import com.tangosol.util.UUID;
 
 import java.util.Map;
-import rx.observables.MathObservable;
-
 import java.util.HashMap;
 import java.util.Random;
+
+import rx.observables.MathObservable;
 
 import static com.oracle.coherence.rx.RxNamedCache.rx;
 

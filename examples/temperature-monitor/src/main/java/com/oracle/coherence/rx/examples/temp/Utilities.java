@@ -16,8 +16,8 @@
  * under the License.
  */
 
-
 package com.oracle.coherence.rx.examples.temp;
+
 
 import javax.swing.JTextField;
 
