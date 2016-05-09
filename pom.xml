@@ -8,7 +8,7 @@
   </parent>
 
   <artifactId>coherence-rx</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
 
   <name>CoherenceRx</name>
 
@@ -86,7 +86,7 @@
       scm:git:https://github.com/coherence-community/coherence-rx.git
     </developerConnection>
     <url>https://github.com/coherence-community/coherence-rx.git</url>
-    <tag>1.0.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
 </project>
