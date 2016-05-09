@@ -5,7 +5,7 @@
 
   <groupId>com.oracle.coherence</groupId>
   <artifactId>simple</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0</version>
 
   <name>Simple CoherenceRx Examples</name>
 
@@ -20,7 +20,7 @@
 
     <!-- dependency versions -->
     <coherence.version>12.2.1-0-0</coherence.version>
-    <coherence-rx.version>1.0.0-SNAPSHOT</coherence-rx.version>
+    <coherence-rx.version>1.0.0</coherence-rx.version>
     <rxjava.version>1.1.0</rxjava.version>
     <rxjavamath.version>1.0.0</rxjavamath.version>
   </properties>
