@@ -57,6 +57,9 @@ public class ObservableMapListener<K, V>
     /**
      * Create ObservableMapListener instance.
      *
+     * @param <K> the type of the entry keys
+     * @param <V> the type of the entry values
+     *
      * @return an ObservableMapListener
      */
     public static <K, V> ObservableMapListener<K, V> create()
@@ -122,7 +125,7 @@ public class ObservableMapListener<K, V>
 
     /**
      * Invoked when any event is received.
-     * <p/>
+     * <p>
      * This method is called internally by the {@link #entryInserted},
      * {@link #entryUpdated} and {@link #entryDeleted} methods, and is responsible
      * for propagating received events to all of the subscribers of this observable.

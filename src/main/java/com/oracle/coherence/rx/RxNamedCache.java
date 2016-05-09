@@ -100,7 +100,7 @@ public interface RxNamedCache<K, V>
 
     /**
      * Get all the specified keys, if they are in the cache.
-     * <p/>
+     * <p>
      * For each key that is in the cache, that key and its corresponding value
      * will be placed in the observable stream that is returned by this method.
      * The absence of a key in the returned stream indicates that it was not in
@@ -121,7 +121,7 @@ public interface RxNamedCache<K, V>
      * Associates the specified value with the specified key in this cache. If
      * the cache previously contained a mapping for this key, the old value is
      * replaced.
-     * <p/>
+     * <p>
      * Invoking this method is equivalent to the following call:
      * <pre>
      *     put(oKey, oValue, CacheMap.EXPIRY_DEFAULT);
@@ -543,7 +543,7 @@ public interface RxNamedCache<K, V>
      * Compute the value using the given mapping function and enter it into this
      * map (unless {@code null}), if the specified key is not already associated
      * with a value (or is mapped to {@code null}).
-     * <p/>
+     * <p>
      * If the mapping function returns {@code null} no mapping is recorded. If
      * the function itself throws an (unchecked) exception, the exception is
      * rethrown, and no mapping is recorded.
@@ -564,7 +564,7 @@ public interface RxNamedCache<K, V>
     /**
      * Compute a new mapping given the key and its current mapped value, if the
      * value for the specified key is present and non-null.
-     * <p/>
+     * <p>
      * If the function returns {@code null}, the mapping is removed.  If the
      * function itself throws an (unchecked) exception, the exception is
      * rethrown, and the current mapping is left unchanged.
@@ -583,7 +583,7 @@ public interface RxNamedCache<K, V>
 
     /**
      * Compute a new mapping for the specified key and its current value.
-     * <p/>
+     * <p>
      * If the function returns {@code null}, the mapping is removed (or remains
      * absent if initially absent). If the function itself throws an (unchecked)
      * exception, the exception is rethrown, and the current mapping is left
@@ -606,14 +606,14 @@ public interface RxNamedCache<K, V>
      * associated with null, associates it with the given non-null value.
      * Otherwise, replaces the associated value with the results of the given
      * remapping function, or removes if the result is {@code null}.
-     * <p/>
+     * <p>
      * This method may be of use when combining multiple mapped values for a
      * key. For example, to either create or append a {@code String msg} to a
      * value mapping:
      * <pre>
      *   {@code map.merge(key, msg, String::concat)}
      * </pre>
-     * <p/>
+     * <p>
      * If the function returns {@code null} the mapping is removed.  If the
      * function itself throws an (unchecked) exception, the exception is
      * rethrown, and the current mapping is left unchanged.
