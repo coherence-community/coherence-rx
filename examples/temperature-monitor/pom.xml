@@ -65,36 +65,6 @@
 
   </dependencies>
 
-  <profiles>
-    <!-- run the temperature monitor example -->
-    <profile>
-      <id>runExample</id>
-      <activation>
-        <property>
-          <name>runExample</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>1.1</version>
-            <configuration>
-              <executable>java</executable>
-              <arguments>
-                <argument>-classpath</argument>
-                <classpath />
-                <argument>-Djava.awt.headless=false</argument>
-                <argument>com.oracle.coherence.rx.examples.temp.App</argument>
-              </arguments>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
-
   <url>https://github.com/coherence-community/coherence-rx</url>
 
   <licenses>
@@ -152,6 +122,21 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+
+      <!-- run the temperature monitor example via mvn exec:exec -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.4.0</version>
+        <configuration>
+          <executable>java</executable>
+          <arguments>
+            <argument>-classpath</argument>
+            <classpath />
+            <argument>com.oracle.coherence.rx.examples.temp.App</argument>
+          </arguments>
+        </configuration>
       </plugin>
 
     </plugins>

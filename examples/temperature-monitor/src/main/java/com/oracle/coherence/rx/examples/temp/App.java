@@ -28,6 +28,7 @@ import com.oracle.bedrock.runtime.coherence.CoherenceClusterMember;
 import com.oracle.bedrock.runtime.coherence.options.ClusterName;
 import com.oracle.bedrock.runtime.coherence.options.Logging;
 import com.oracle.bedrock.runtime.console.SystemApplicationConsole;
+import com.oracle.bedrock.runtime.java.options.Headless;
 import com.oracle.bedrock.runtime.java.options.HeapSize;
 
 import com.oracle.coherence.rx.RxNamedCache;
@@ -77,6 +78,7 @@ public class App
                         Logging.at(2),
                         HeapSize.initial(1, HeapSize.Units.GB),
                         HeapSize.maximum(1, HeapSize.Units.GB),
+                        Headless.disabled(),
                         ClusterName.of(CLUSTER_NAME));
 
         try
