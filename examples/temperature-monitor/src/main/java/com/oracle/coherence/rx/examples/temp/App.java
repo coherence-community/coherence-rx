@@ -78,7 +78,6 @@ public class App
                         Logging.at(2),
                         HeapSize.initial(1, HeapSize.Units.GB),
                         HeapSize.maximum(1, HeapSize.Units.GB),
-                        Headless.disabled(),
                         ClusterName.of(CLUSTER_NAME));
 
         try
@@ -95,6 +94,8 @@ public class App
             // start storage-disabled client and get the CCF
             Options options = clusterMember.getOptions();
             ConfigurableCacheFactory ccf = new StorageDisabledMember().build(LocalPlatform.get(), null, options.asArray());
+
+            System.getProperties().remove("java.awt.headless");
 
             // obtain named cache from the client
             NamedCache<UUID, DeviceReading> cache =
